@@ -21,6 +21,7 @@ const REPULSION_STRENGTH = 3000; // Forza di repulsione (dimezzata rispetto a pr
 const SPRING_STRENGTH = 0.01; // Forza della "molla" tra i nodi collegati
 const DAMPING = 0.9; // Smorzamento per rallentare il movimento
 const FORCE_ITERATIONS = 1000; // Numero di iterazioni per stabilizzare il layout
+const VERTICAL_FACTOR = 1.2; // Fattore di attrazione verticale
 
 // Funzione principale di layout
 export function layout(edges: Edge[]): Node[] {
@@ -84,7 +85,7 @@ export function layout(edges: Edge[]): Node[] {
 
           const repulsion = REPULSION_STRENGTH / (distance * distance);
           nodeA.vx! += (dx / distance) * repulsion;
-          nodeA.vy! += (dy / distance) * repulsion;
+          nodeA.vy! += (dy / distance) * repulsion * VERTICAL_FACTOR; // <----- Maggiore repulsione verticale
         }
       });
     });
@@ -99,7 +100,9 @@ export function layout(edges: Edge[]): Node[] {
         const distance = Math.sqrt(dx * dx + dy * dy);
         const attraction = (distance - 100) * SPRING_STRENGTH; // distanza ideale di 100
         const fx = (dx / distance) * attraction;
-        const fy = (dy / distance) * attraction;
+        // const fy = (dy / distance) * attraction;
+        const fy =
+          (dy / distance) * (attraction * Math.abs(2 - VERTICAL_FACTOR)); // <----- Maggiore attrazione verticale
 
         if (sourceNode.vx && sourceNode.vy) {
           sourceNode.vx += fx;

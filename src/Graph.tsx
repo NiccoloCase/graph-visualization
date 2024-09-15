@@ -27,6 +27,7 @@ const drawNode = (
   img.onload = () => {
     ctx.save();
     ctx.beginPath();
+
     ctx.arc(
       node.x + translateX,
       node.y + translateY,
@@ -42,6 +43,11 @@ const drawNode = (
       node.size,
       node.size
     );
+    // image border width gradient
+    ctx.strokeStyle = "yellow";
+    ctx.lineWidth = 3;
+    ctx.stroke();
+
     ctx.restore();
   };
 
@@ -64,7 +70,7 @@ const drawEdges = (
     ctx.beginPath();
     ctx.moveTo(nodes[start].x + translateX, nodes[start].y + translateY);
     ctx.lineTo(nodes[end].x + translateX, nodes[end].y + translateY);
-    ctx.strokeStyle = "grey";
+    ctx.strokeStyle = "#303030";
     ctx.lineWidth = 2;
     ctx.stroke();
   });
