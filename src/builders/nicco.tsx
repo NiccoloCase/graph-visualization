@@ -1,10 +1,9 @@
 import { GraphNode } from "../Graph";
 
+const NODE_SIZE = 60;
+
 const WINDOW_WIDTH = window.innerWidth;
 const WINDOW_HEIGHT = window.innerHeight;
-
-const NODE_SIZE = 70;
-const MIN_DISTANCE = NODE_SIZE + 5;
 
 export interface Node extends GraphNode {
   id: number;
@@ -52,6 +51,16 @@ export function layout(edges: Edge[]): Node[] {
     return acc;
   }, [] as Node[]);
 
+  // Preleva il nodo con id 0
+  const node0 = nodes.find((node) => node.id === 0);
+  if (node0) {
+    // Da al nodo 0 una posizione fissa al centro
+    node0.x = WINDOW_WIDTH / 2;
+    node0.y = WINDOW_HEIGHT / 2;
+    // Dimensione doppiamente grande
+    node0.size = NODE_SIZE * 2;
+  }
+
   // Itera più volte per stabilizzare il layout
   for (let i = 0; i < FORCE_ITERATIONS; i++) {
     // Applica la forza di repulsione tra i nodi
@@ -62,9 +71,11 @@ export function layout(edges: Edge[]): Node[] {
           const dy = nodeA.y - nodeB.y;
           const distance = Math.sqrt(dx * dx + dy * dy) + 0.01; // evita divisioni per zero
 
+          const minDistance = nodeA.size / 2 + nodeB.size / 2;
+
           // Verifica se la distanza è inferiore a NODE_SIZE (evita sovrapposizioni)
-          if (distance < MIN_DISTANCE) {
-            const overlapRepulsion = (MIN_DISTANCE - distance) * 0.5; // Applicazione più leggera della repulsione
+          if (distance < minDistance) {
+            const overlapRepulsion = (minDistance - distance) * 0.5; // Applicazione più leggera della repulsione
             nodeA.vx! += (dx / distance) * overlapRepulsion;
             nodeA.vy! += (dy / distance) * overlapRepulsion;
             nodeB.vx! -= (dx / distance) * overlapRepulsion;
@@ -109,6 +120,18 @@ export function layout(edges: Edge[]): Node[] {
       node.vy *= DAMPING;
       node.x += node.vx;
       node.y += node.vy;
+    });
+  }
+
+  // Trasla tutti i nodi per far si che il nodo 0 sia al centro
+  if (node0) {
+    const translateX = WINDOW_WIDTH / 2 - node0.x;
+    const translateY = WINDOW_HEIGHT / 2 - node0.y;
+    nodes.forEach((node) => {
+      if (node) {
+        node.x += translateX;
+        node.y += translateY;
+      }
     });
   }
 
