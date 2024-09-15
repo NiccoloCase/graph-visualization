@@ -1,6 +1,7 @@
 import { GraphNode } from "../Graph";
 
-const NODE_SIZE = 60;
+const ROOT_NODE_SIZE = 90;
+const NODE_SIZE = 40;
 
 const WINDOW_WIDTH = window.innerWidth;
 const WINDOW_HEIGHT = window.innerHeight;
@@ -25,6 +26,8 @@ const VERTICAL_FACTOR = 1.2; // Fattore di attrazione verticale
 
 // Funzione principale di layout
 export function layout(edges: Edge[]): Node[] {
+  const t0 = performance.now();
+
   // Inizializza i nodi con posizioni casuali e velocità nulle
   const nodes = edges.reduce((acc, { source, target }) => {
     const sourceNode = acc.find((node) => node.id === source);
@@ -58,8 +61,8 @@ export function layout(edges: Edge[]): Node[] {
     // Da al nodo 0 una posizione fissa al centro
     node0.x = WINDOW_WIDTH / 2;
     node0.y = WINDOW_HEIGHT / 2;
-    // Dimensione doppiamente grande
-    node0.size = NODE_SIZE * 2;
+    // Dimensione maggiore per il nodo 0
+    node0.size = ROOT_NODE_SIZE;
   }
 
   // Itera più volte per stabilizzare il layout
@@ -137,6 +140,9 @@ export function layout(edges: Edge[]): Node[] {
       }
     });
   }
+
+  const t1 = performance.now();
+  console.log("Call to layout took " + (t1 - t0) + " milliseconds.");
 
   return nodes;
 }
