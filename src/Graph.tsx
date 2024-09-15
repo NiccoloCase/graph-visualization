@@ -10,6 +10,7 @@ type Edge = [number, number];
 interface GraphProps {
   nodes: Node[];
   edges: Edge[];
+  nodeSize: number;
 }
 
 const drawNode = (
@@ -64,7 +65,7 @@ const drawEdges = (
   });
 };
 
-export const Graph: React.FC<GraphProps> = ({ edges, nodes }) => {
+export const Graph: React.FC<GraphProps> = ({ edges, nodes, nodeSize }) => {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const [translateX, setTranslateX] = useState(0);
   const [translateY, setTranslateY] = useState(0);
@@ -83,7 +84,7 @@ export const Graph: React.FC<GraphProps> = ({ edges, nodes }) => {
 
       // Draw nodes
       nodes.forEach((node, index) => {
-        drawNode(ctx, node, 70, translateX, translateY, index);
+        drawNode(ctx, node, nodeSize, translateX, translateY, index);
       });
     }
   }, [edges, nodes, translateX, translateY]);

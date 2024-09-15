@@ -1,6 +1,6 @@
 import React, { useMemo } from "react";
 import { Graph } from "./Graph";
-import { layout } from "./builders/structured";
+import { layout } from "./builders/nicco";
 
 const EDGES = [
   [0, 1],
@@ -33,7 +33,7 @@ function App() {
 
   return (
     <div className="App">
-      <Graph nodes={nodes} edges={EDGES} />
+      <Graph nodes={nodes} edges={EDGES} nodeSize={70} />
     </div>
   );
 }
