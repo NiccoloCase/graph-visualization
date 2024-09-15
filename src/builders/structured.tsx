@@ -68,7 +68,7 @@ const createNodeTree = (edges: Edge[]) => {
   return { rootNode, nodesMap };
 };
 
-export function structuralLayout(edges: Edge[]): Node[] {
+export function layout(edges: Edge[]): Node[] {
   // Crea la struttura ramificata del grafo
   const { rootNode, nodesMap } = createNodeTree(edges);
 

@@ -1,6 +1,6 @@
 import React, { useMemo } from "react";
 import { Graph } from "./Graph";
-import { structuralLayout } from "./builders/builder";
+import { layout } from "./builders/structured";
 
 const EDGES = [
   [0, 1],
@@ -27,7 +27,7 @@ const EDGES = [
 function App() {
   const edges = EDGES.map(([source, target]) => ({ source, target }));
   const nodes = useMemo(() => {
-    const calcNodes = structuralLayout(edges);
+    const calcNodes = layout(edges);
     return calcNodes;
   }, [edges]);
 
