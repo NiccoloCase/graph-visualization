@@ -1,22 +1,21 @@
 import React, { useEffect, useRef, useState } from "react";
 
-type Node = {
+export type GraphNode = {
   x: number;
   y: number;
+  size: number;
 };
 
-type Edge = [number, number];
+export type GraphEdge = [number, number];
 
 interface GraphProps {
-  nodes: Node[];
-  edges: Edge[];
-  nodeSize: number;
+  nodes: GraphNode[];
+  edges: GraphEdge[];
 }
 
 const drawNode = (
   ctx: CanvasRenderingContext2D | null,
-  node: Node,
-  size: number,
+  node: GraphNode,
   translateX: number,
   translateY: number,
   index: number
@@ -28,28 +27,34 @@ const drawNode = (
   img.onload = () => {
     ctx.save();
     ctx.beginPath();
-    ctx.arc(node.x + translateX, node.y + translateY, size / 2, 0, 2 * Math.PI);
+    ctx.arc(
+      node.x + translateX,
+      node.y + translateY,
+      node.size / 2,
+      0,
+      2 * Math.PI
+    );
     ctx.clip();
     ctx.drawImage(
       img,
-      node.x + translateX - size / 2,
-      node.y + translateY - size / 2,
-      size,
-      size
+      node.x + translateX - node.size / 2,
+      node.y + translateY - node.size / 2,
+      node.size,
+      node.size
     );
     ctx.restore();
   };
 
   // Draw node label
-  ctx.fillStyle = "white";
+  ctx.fillStyle = "black";
   ctx.font = "bold 14px serif";
   ctx.fillText(`${index}`, node.x + translateX - 5, node.y + translateY + 5);
 };
 
 const drawEdges = (
   ctx: CanvasRenderingContext2D | null,
-  edges: Edge[],
-  nodes: Node[],
+  edges: GraphEdge[],
+  nodes: GraphNode[],
   translateX: number,
   translateY: number
 ) => {
@@ -59,13 +64,13 @@ const drawEdges = (
     ctx.beginPath();
     ctx.moveTo(nodes[start].x + translateX, nodes[start].y + translateY);
     ctx.lineTo(nodes[end].x + translateX, nodes[end].y + translateY);
-    ctx.strokeStyle = "black";
+    ctx.strokeStyle = "grey";
     ctx.lineWidth = 2;
     ctx.stroke();
   });
 };
 
-export const Graph: React.FC<GraphProps> = ({ edges, nodes, nodeSize }) => {
+export const Graph: React.FC<GraphProps> = ({ edges, nodes }) => {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const [translateX, setTranslateX] = useState(0);
   const [translateY, setTranslateY] = useState(0);
@@ -84,7 +89,7 @@ export const Graph: React.FC<GraphProps> = ({ edges, nodes, nodeSize }) => {
 
       // Draw nodes
       nodes.forEach((node, index) => {
-        drawNode(ctx, node, nodeSize, translateX, translateY, index);
+        drawNode(ctx, node, translateX, translateY, index);
       });
     }
   }, [edges, nodes, translateX, translateY]);
@@ -119,7 +124,7 @@ export const Graph: React.FC<GraphProps> = ({ edges, nodes, nodeSize }) => {
         ref={canvasRef}
         width={window.innerWidth}
         height={window.innerHeight}
-        style={{ backgroundColor: "#fff" }}
+        style={{ backgroundColor: "#101010" }}
       />
     </div>
   );

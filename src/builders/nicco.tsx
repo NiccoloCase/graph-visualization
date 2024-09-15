@@ -1,13 +1,13 @@
+import { GraphNode } from "../Graph";
+
 const WINDOW_WIDTH = window.innerWidth;
 const WINDOW_HEIGHT = window.innerHeight;
 
 const NODE_SIZE = 70;
 const MIN_DISTANCE = NODE_SIZE + 5;
 
-export interface Node {
+export interface Node extends GraphNode {
   id: number;
-  x: number;
-  y: number;
   vx?: number; // velocità lungo x
   vy?: number; // velocità lungo y
 }
@@ -36,6 +36,7 @@ export function layout(edges: Edge[]): Node[] {
         y: Math.random() * WINDOW_HEIGHT,
         vx: 0,
         vy: 0,
+        size: NODE_SIZE,
       });
     }
     if (!targetNode) {
@@ -45,6 +46,7 @@ export function layout(edges: Edge[]): Node[] {
         y: Math.random() * WINDOW_HEIGHT,
         vx: 0,
         vy: 0,
+        size: NODE_SIZE,
       });
     }
     return acc;
