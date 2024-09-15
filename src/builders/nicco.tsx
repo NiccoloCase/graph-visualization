@@ -1,6 +1,9 @@
 const WINDOW_WIDTH = window.innerWidth;
 const WINDOW_HEIGHT = window.innerHeight;
 
+const NODE_SIZE = 70;
+const MIN_DISTANCE = NODE_SIZE + 5;
+
 export interface Node {
   id: number;
   x: number;
@@ -15,10 +18,10 @@ export interface Edge {
 }
 
 // Costanti per le forze
-const REPULSION_STRENGTH = 1000; // Forza di repulsione
+const REPULSION_STRENGTH = 3000; // Forza di repulsione (dimezzata rispetto a prima)
 const SPRING_STRENGTH = 0.01; // Forza della "molla" tra i nodi collegati
 const DAMPING = 0.9; // Smorzamento per rallentare il movimento
-const FORCE_ITERATIONS = 100; // Numero di iterazioni per stabilizzare il layout
+const FORCE_ITERATIONS = 1000; // Numero di iterazioni per stabilizzare il layout
 
 // Funzione principale di layout
 export function layout(edges: Edge[]): Node[] {
@@ -56,9 +59,19 @@ export function layout(edges: Edge[]): Node[] {
           const dx = nodeA.x - nodeB.x;
           const dy = nodeA.y - nodeB.y;
           const distance = Math.sqrt(dx * dx + dy * dy) + 0.01; // evita divisioni per zero
+
+          // Verifica se la distanza è inferiore a NODE_SIZE (evita sovrapposizioni)
+          if (distance < MIN_DISTANCE) {
+            const overlapRepulsion = (MIN_DISTANCE - distance) * 0.5; // Applicazione più leggera della repulsione
+            nodeA.vx! += (dx / distance) * overlapRepulsion;
+            nodeA.vy! += (dy / distance) * overlapRepulsion;
+            nodeB.vx! -= (dx / distance) * overlapRepulsion;
+            nodeB.vy! -= (dy / distance) * overlapRepulsion;
+          }
+
           const repulsion = REPULSION_STRENGTH / (distance * distance);
-          nodeA!.vx! += (dx / distance) * repulsion;
-          nodeA!.vy! += (dy / distance) * repulsion;
+          nodeA.vx! += (dx / distance) * repulsion;
+          nodeA.vy! += (dy / distance) * repulsion;
         }
       });
     });
